@@ -27,9 +27,9 @@ class RecipesService {
    * TODO : Récupérer toutes les recettes de la collection
    * @returns les recettes de la collection
    */
-     async editItem(item) {
-      return this.collection.findOneAndUpdate(item.id, {name:item.name});
-    }
+  async editItem(item) {
+    return this.collection.findOneAndUpdate({"id": item.id}, {"$set" : {"name":item.name, "price":item.price}}, {returnNewDocument: true});
+  }
   
 
   // /**
@@ -37,9 +37,9 @@ class RecipesService {
   //  * @param {string} id : le id qui correspond à la recette que l'on cherche
   //  * @returns la recette correspondante
   //  */
-  // async getRecipeById(id) {
-  //   return this.collection.findOne({ id: Number(id) });
-  // }
+  async getRecipeById(id) {
+    return this.collection.findOne({ id: Number(id) });
+  }
 
   // /**
   //  * TODO : Récupérer des recettes selon leur catégorie
@@ -69,7 +69,8 @@ class RecipesService {
    * @returns le résultat de la modification
    */
   async deleteRecipeById(id) {
-    return this.collection.findOneAndDelete({
+    console.log(id);
+    return await this.collection.findOneAndDelete({
       id: Number(id),
     });
   }
@@ -79,7 +80,7 @@ class RecipesService {
    * @param {*} item : la nouvelle recette à ajouter
    */
   async addNewRecipe(item) {
-    //const items = await this.getAllRecipes();
+    //const items = await this.getAllItems();
     // let potentialId = items.length + 1;
     // // Loop to avoid duplicating an ID if a recipe was deleted
     // while (recipes.some((element) => element.id === potentialId)) {
@@ -93,12 +94,11 @@ class RecipesService {
    * TODO : Ajouter une recette à la liste des recettes
    * @param {*} item : la nouvelle recette à ajouter
    */
-     async modifyName(item) {
-      const items = await this.getAllRecipes();
-      let itemToMod = this.collection.findOne(item.id);
-      itemToMod.name = item.name;
-      itemToMod.price = item.price;
-      await this.getAllRecipes();
+    async modifyItem(item) {
+      //const items = await this.getAllRecipes();
+      let itemToMod = await this.collection.findOneAndUpdate({id: Number(item.id)}, {"$set" : {name:item.name, price:item.price}});
+      //await this.getAllRecipes();
+      return itemToMod;
     }
 
   /**

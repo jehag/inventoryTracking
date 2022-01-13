@@ -14,7 +14,6 @@ const HTTPInterface = {
         "content-type": "application/json",
       },
     });
-
     return await response.json();
   },
 
@@ -170,6 +169,14 @@ export default class HTTPManager {
       await HTTPInterface.PATCH(`${this.recipesBaseURL}/admin/reset`);
     } catch (error) {
       console.log("An error has occured while reseting recipes", error);
+    }
+  }
+
+  async editItem(item) {
+    try {
+      await HTTPInterface.POST(`${this.recipesBaseURL}/editItem`, item);
+    } catch (error) {
+      console.log("An error occured while POSTING new recipe", error);
     }
   }
 }

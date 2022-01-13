@@ -31,8 +31,9 @@ class RecipesController {
           return;
         }
         const newRecipe = req.body;
-        await this.recipesService.addNewRecipe(newRecipe);
+        let itemAdded = await this.recipesService.addNewRecipe(newRecipe);
         res.status(HTTP_STATUS.CREATED).send();
+        return itemAdded;
       } catch (error) {
         res.status(HTTP_STATUS.SERVER_ERROR).send();
       }
@@ -98,11 +99,10 @@ class RecipesController {
       }
     });
 
-    this.router.post('/editName/:item', async (req, res) => {
+    this.router.post('/editItem', async (req, res) => {
       try {
-        const { item } = req.params;
-        const recipes = await this.recipesService.modifyName(item);
-        console.log(item);
+        const item = req.body;
+        const recipes = await this.recipesService.modifyItem(item);
         res.json(recipes);
       } catch (error) {
         res.status(HTTP_STATUS.SERVER_ERROR).send();
