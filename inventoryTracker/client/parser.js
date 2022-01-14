@@ -65,15 +65,6 @@ async function refreshEdit() {
     }
 }
 
-function findId() {
-    let potentialId = allItems.length + 1;
-    // Loop to avoid duplicating an ID if an item was deleted
-    while (allItems.some((element) => element.id === potentialId)) {
-      potentialId--;
-    }
-    return potentialId;
-}
-
 function checkId(id) {
     while (allItems.some((element) => element.id === id)) {
         return false;
@@ -86,12 +77,8 @@ async function addNew() {
         alert("Your item must have at least three propreties (including the ID)");
         return;
     }
-    let index;
     let item = {};
-    if (automaticToggle.checked) {
-        index = await findId();
-    }
-    else {
+    if (!automaticToggle.checked) {
         if (isNaN(addFields.children[1].value) || parseInt(addFields.children[1].value) < 1) {
             alert("The ID must be a number greater than 0")
             return;
@@ -100,11 +87,11 @@ async function addNew() {
             alert("This ID already exists");
             return;
         }
-        index = parseInt(addFields.children[1].value)
+        item = {
+            id : parseInt(addFields.children[1].value),
+        };
     }
-    item = {
-        id : index,
-    };
+    
     let i = automaticToggle.checked ? 0 : SIZE_OF_ROW;
     for (i; i < addFields.children.length - 1; i = i+2) {
         if (addFields.children[i].value.length == 0 || addFields.children[i+1].value.length == 0) {
@@ -142,8 +129,11 @@ async function editItem() {
         id: allItems[selectEdit.selectedIndex].id
     };
     let itemToMod = await findItemWithId(selectEdit.options[selectEdit.selectedIndex].value);
+    let j = 0;
     for (let i = 0; i < Object.keys(itemToMod).length; i++) {
-        item[Object.keys(itemToMod)[i]] = editFields.childNodes[i-2].value;
+        if (Object.keys(itemToMod)[i] != "id" && Object.keys(itemToMod)[i] != "_id"){
+            item[Object.keys(itemToMod)[i]] = editFields.childNodes[j++].value;
+        }
     }
     await httpManager.editItem(item);
     await resetList();

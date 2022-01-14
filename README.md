@@ -1,15 +1,7 @@
 # inventoryTracking
-1. Download "Visual Studio Code".
-2. Open "Visual Studio Code".
-3. Click on "Extensions" in the left menu.
-4. Download the "Live Server" extension.
-5. Go into the "inventoryTracker" folder.
-6. Right click and open with code.
-7. Open two terminals by clicking "Terminal > New Terminal" in the top menu.
-8. Write in the terminal "npm install".
-9. Write in the terminal "npm install mongodb".
-10. Split the terminal by clicking on the icon next to the trash can on the top right of the terminal window.
-11. Type in the left terminal : "cd server" and press Enter
-12. Type in the left terminal : "npm start" and press Enter, you should see the server running
-13. Type in the right terminal : "cd client" and press Enter
-14. Type in the right terminal : "npm start" and press Enter, you should see the client running
+1. Donwload "Node.js" and make sure you check the option "Automatically install the necessary tools..." too.
+2. Go into the "inventoryTracker" folder and open a terminal in "inventoryTracker/server" and one in "inventoryTracker/client".
+3. Write in the server terminal "npm install".
+4. Type in the server terminal : "npm start" and press Enter, you should see the server running
+5. Write in the client terminal "npm install".
+6. Type in the client terminal : "npm start" and press Enter, you should see the client running

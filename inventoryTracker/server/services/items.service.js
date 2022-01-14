@@ -43,17 +43,28 @@ class ItemsService {
    * @param item : the new item to add
    */
   async addNewItem(item) {
+    if (item.id == undefined) {
+      item["id"] = await this.findId();
+    }
     await this.collection.insertOne(item);
   }
 
   /**
    * @param item : the item to modify
-   * @returns the promise that the item has been modified
    */
-    async editItem(item) {
-      let itemToMod = await this.collection.findOneAndUpdate({id: Number(item.id)}, {"$set" : {name:item.name, price:item.price}});
-      return itemToMod;
+  async editItem(item) {
+    await this.collection.findOneAndUpdate({id: item.id}, {"$set" : item}); 
+  }
+
+  async findId() {
+    let allItems = await this.getAllItems();
+    let potentialId = 1;
+    // Loop to avoid duplicating an ID if an item was deleted
+    while (allItems.some((element) => element.id === potentialId)) {
+      potentialId++;
     }
+    return potentialId;
+}
 }
 
 module.exports = { ItemsService };

@@ -31,9 +31,8 @@ class ItemsController {
           return;
         }
         const newItem = req.body;
-        let itemAdded = await this.itemsService.addNewItem(newItem);
+        await this.itemsService.addNewItem(newItem);
         res.status(HTTP_STATUS.CREATED).send();
-        return itemAdded;
       } catch (error) {
         res.status(HTTP_STATUS.SERVER_ERROR).send();
       }
@@ -74,8 +73,8 @@ class ItemsController {
     this.router.post('/editItem', async (req, res) => {
       try {
         const item = req.body;
-        const itemToMod = await this.itemsService.editItem(item);
-        res.json(itemToMod);
+        await this.itemsService.editItem(item);
+        res.status(HTTP_STATUS.NO_CONTENT).send();
       } catch (error) {
         res.status(HTTP_STATUS.SERVER_ERROR).send();
       }

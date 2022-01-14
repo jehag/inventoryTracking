@@ -14,7 +14,7 @@ const HTTPInterface = {
         "content-type": "application/json",
       },
     });
-    return await response.json();
+    return response.status;
   },
 
   DELETE: async function (endpoint) {
@@ -24,7 +24,7 @@ const HTTPInterface = {
         "content-type": "application/json",
       },
     });
-    return await response.status;
+    return response.status;
   },
 
   PATCH: async function (endpoint) {
@@ -77,7 +77,7 @@ export default class HTTPManager {
   }
 
   /**
-   * @param newItem
+   * @param newItem : the item you want to add
    */
   async addNewItem(newItem) {
     try {
