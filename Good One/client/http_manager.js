@@ -37,146 +37,75 @@ const HTTPInterface = {
 
 export default class HTTPManager {
   constructor() {
-    this.recettes = {};
-    this.recipesBaseURL = "recettes";
-    this.contactsBaseURL = "contacts";
+    this.items = {};
+    this.baseURL = "items";
   }
 
   /**
-   * @todo Fait une requête GET à /api/recettes pour obtenir toutes les recettes
-   * @returns
+   * @todo Sends a GET request to /api/items to obtain all the items
+   * @returns a promise that all the items have been fetched
    */
-  async fetchAllRecipes() {
-    return await HTTPInterface.GET(`${this.recipesBaseURL}`);
+  async fetchAllItems() {
+    return await HTTPInterface.GET(`${this.baseURL}`);
   }
 
   /**
-   * @todo Fait une requête GET à /api/contacts pour obtenir tous les messages de contact
-   * @returns
+   * Get all the items
+   * @returns all the items on the server
    */
-  async fetchAllContacts() {
-    return await HTTPInterface.GET(`${this.contactsBaseURL}`);
-  }
-
-  /**
-   * Récupérer toutes les recettes
-   * @returns toutes les recettes récupérés du serveur
-   */
-  async getAllRecipes() {
+  async getAllItems() {
     return new Promise(async (resolve, reject) => {
       try {
-        this.recettes = await this.fetchAllRecipes();
-        resolve(this.recettes);
+        this.items = await this.fetchAllItems();
+        resolve(this.items);
       } catch (err) {
-        reject("Échec lors de la requête GET /api/recettes");
+        reject("Error in the GET request /api/items");
       }
     });
   }
 
   /**
-   * @todo Récupérer une recette à travers son paramètre id
-   * @param {*} id : le id qui correspond à la recette qu'on cherche
-   * @returns la recette correspondante ou une rédirection vers la page erreur.html si recettes n'existe pas ou en cas d'erreurs
+   * @param id : the id corresponding to the item we want
+   * @returns the item or towards /error.html if it doesn't exist
    */
-  async getRecipeByID(id) {
+  async getItemByID(id) {
     try {
-      return await HTTPInterface.GET(`${this.recipesBaseURL}/${id}`);
+      return await HTTPInterface.GET(`${this.baseURL}/${id}`);
     } catch (error) {
-      window.location.href = "/erreur";
+      window.location.href = "/error";
     }
   }
 
   /**
-   * @todo Faire une requête vers /recettes/category/:category
-   * Filtre les recettes en fonction d'une catégorie et retourne le résultat
-   * Si category est undefined ou null, toutes les recettes sont retournées
-   * @param {string} category categorie de recette pour le filtre
-   * @returns les recettes de la catégorie de recheche
+   * @param newItem
    */
-  async getRecipesByCategory(category) {
-    if (!category) {
-      return await this.getAllRecipes();
-    }
-
+  async addNewItem(newItem) {
     try {
-      return await HTTPInterface.GET(`${this.recipesBaseURL}/category/${category}`);
+      await HTTPInterface.POST(`${this.baseURL}`, newItem);
     } catch (error) {
-      return this.recettes;
+      console.log("An error occured while POSTING the new item", error);
     }
   }
 
   /**
-   * @todo Faire une requête vers /recettes/ingredient/:ingredient?matchExact
-   * Filtre les recettes en fonction d'un ingrédient et retourne le résultat
-   * Le paramètre matchExact est passée comme paramètre de query s'il est vrai
-   * 
-   * Ex : /recettes/ingredient/monIngredient?matchExact=true si le paramètre est à true
-   * sinon : /recettes/ingredient/monIngredient
-   * @param {string} ingredient ingrédient pour le filtre
-   * @param {boolean} matchExact recherche exacte ou non pour l'ingrédient
-   * @returns les recettes de la catégorie de recheche
+   * @param id: id of item to delete
    */
-  async getRecipesByIngredients(ingredient, matchExact) {
+  async deleteItem(id) {
     try {
-      const matchExactString = matchExact ? `?matchExact=true` : "";
-      return await HTTPInterface.GET(`${this.recipesBaseURL}/ingredient/${ingredient}${matchExactString}`);
+      await HTTPInterface.DELETE(`${this.baseURL}/${id}`);
     } catch (error) {
-      return this.recettes;
+      console.log("An error occured while DELETING item", error);
     }
   }
 
   /**
-   * @todo Envoyer la nouvelle recette au serveur pour la stocker dans la liste des recettes
-   * @param {*} recette
+   * @param item: item to edit
    */
-  async addNewRecipe(newRecipe) {
-    try {
-      await HTTPInterface.POST(`${this.recipesBaseURL}`, newRecipe);
-    } catch (error) {
-      console.log("An error occured while POSTING new recipe", error);
-    }
-  }
-
-  /**
-   * @todo Faire une requête DELETE pour supprimer une recette identifiée par son id
-   * @param {*} id: recette à supprimer
-   */
-  async deleteRecipe(id) {
-    try {
-      await HTTPInterface.DELETE(`${this.recipesBaseURL}/${id}`);
-    } catch (error) {
-      console.log("An error occured while DELETING recipe", error);
-    }
-  }
-
-  /**
-   * @todo Faire une requête DELETE pour supprimer un contact identifié par son id
-   * @param {*} id: contact à supprimer
-   */
-  async deleteContact(id) {
-    try {
-      await HTTPInterface.DELETE(`${this.contactsBaseURL}/${id}`);
-    } catch (error) {
-      console.log("An error occured while DELETING contact", error);
-    }
-  }
-
-  /**
-   * Faire une requête PATCH pour réinitialiser la liste des recettes
-   */
-  async resetRecipes() {
-    try {
-      await HTTPInterface.PATCH(`${this.recipesBaseURL}/admin/reset`);
-    } catch (error) {
-      console.log("An error has occured while reseting recipes", error);
-    }
-  }
-
   async editItem(item) {
     try {
-      await HTTPInterface.POST(`${this.recipesBaseURL}/editItem`, item);
+      await HTTPInterface.POST(`${this.baseURL}/editItem`, item);
     } catch (error) {
-      console.log("An error occured while POSTING new recipe", error);
+      console.log("An error occured while POSTING new item", error);
     }
   }
 }
