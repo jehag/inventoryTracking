@@ -65,11 +65,12 @@ async function refreshEdit() {
     }
 }
 
-function checkId(id) {
-    while (allItems.some((element) => element.id === id)) {
-        return false;
+async function checkId(id) {
+    allItems = await httpManager.fetchAllItems();
+    while (allItems.some((element) => element.id == id)) {
+        return true;
     }
-    return true;
+    return false;
 }
 
 async function addNew() {
@@ -83,7 +84,7 @@ async function addNew() {
             alert("The ID must be a number greater than 0")
             return;
         }
-        if (!checkId(addFields.children[1].value)) {
+        if (await checkId(addFields.children[1].value)) {
             alert("This ID already exists");
             return;
         }
@@ -117,7 +118,11 @@ function refreshEditIndex() {
 }
 
 async function deleteItem() {
-    await httpManager.deleteItem(selectDelete.options[selectDelete.selectedIndex].value);
+    let idToDelete = selectDelete.options[selectDelete.selectedIndex]
+    if (idToDelete == undefined) {
+        return;
+    }
+    await httpManager.deleteItem(idToDelete.value);
     await resetList();
     refreshEditIndex();
     await refreshEdit();
@@ -125,6 +130,9 @@ async function deleteItem() {
 }
 
 async function editItem() {
+    if (allItems[selectEdit.selectedIndex] == undefined) {
+        return;
+    }
     const item = {
         id: allItems[selectEdit.selectedIndex].id
     };
@@ -192,10 +200,12 @@ function clearAllAddFields() {
 function addNewField() {
     let breakLine = document.createElement("br");
     let inputName = document.createElement("input");
+    inputName.placeholder = "Column Name";
     addFields.appendChild(inputName);
     let inputColumn = document.createElement("input");
     addFields.appendChild(inputColumn);
     addFields.appendChild(breakLine);
+    inputColumn.placeholder = "Column Value";
 }
 
 function deleteLastField() {
