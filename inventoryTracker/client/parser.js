@@ -55,7 +55,7 @@ async function refreshEdit() {
     if (allItems.length == 0)
         return;
     for (let i = 0; i < Object.keys(allItems[selectEdit.selectedIndex]).length; i++) {
-        if (Object.keys(allItems[0])[i] != "id" && Object.keys(allItems[0])[i] != "_id") {
+        if (Object.keys(allItems[selectEdit.selectedIndex])[i] != "id" && Object.keys(allItems[selectEdit.selectedIndex])[i] != "_id") {
             let input = document.createElement("input");
             let index = Object.keys(allItems[selectEdit.selectedIndex])[i];
             let item = await findItemWithId(selectEdit.options[selectEdit.selectedIndex].value)
@@ -101,6 +101,14 @@ async function addNew() {
         }
         if (item[addFields.children[i].value] != undefined) {
             alert("You have the same field twice");
+            return;
+        }
+        if (addFields.children[i].value == "id") {
+            alert("If you want to modify the ID uncheck the checkbox");
+            return;
+        }
+        if (addFields.children[i].value == "_id") {
+            alert("Change the field name, this name is reserved for MongoDB");
             return;
         }
         item[addFields.children[i++].value] = addFields.children[i].value;
